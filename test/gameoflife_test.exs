@@ -34,4 +34,25 @@ defmodule GameOfLifeTest do
     end)
   end
 
+  test "Return the number of living neighbors" do
+    assert GameOfLife.livingNeighbors(
+      [[:DEAD, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD]] , 1, 1) == 0
+    assert GameOfLife.livingNeighbors(
+      [[:DEAD, :DEAD, :DEAD], [:DEAD, :ALIVE, :DEAD], [:DEAD, :DEAD, :DEAD]] , 1, 1) == 0
+    assert GameOfLife.livingNeighbors(
+      [[:ALIVE, :DEAD, :DEAD], [:DEAD, :ALIVE, :DEAD], [:DEAD, :DEAD, :DEAD]] , 1, 1) == 1
+  end
+
+  test "test if a cell is alive" do
+    assert GameOfLife.isAlive?(:ALIVE) == true
+    assert GameOfLife.isAlive?(:DEAD) == false
+  end
+
+  test "return get cell status" do
+    assert GameOfLife.cellStatus(
+      [[:DEAD, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD]] , {1, 1}) == :DEAD
+    assert GameOfLife.cellStatus(
+      [[:DEAD, :DEAD, :DEAD], [:ALIVE, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD]] , {1, 0}) == :ALIVE
+  end
+
 end

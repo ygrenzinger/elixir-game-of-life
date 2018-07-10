@@ -15,27 +15,54 @@ defmodule GameOfLife do
       true
 
   """
-  def isAliveWhenAliveNeighboursEqual(:ALIVE, x) do
-    x >= 2 && x <= 3
+  def isAliveWhenAliveNeighboursEqual(:ALIVE, livingNeighbors) do
+    livingNeighbors >= 2 && livingNeighbors <= 3
   end
 
-  def isAliveWhenAliveNeighboursEqual(:DEAD, x) do
-    x == 3
+  def isAliveWhenAliveNeighboursEqual(:DEAD, livingNeighbors) do
+    livingNeighbors == 3
   end
 
-  def livingNeighbors(grid, x, y) do
-    coord = [{x-1, y-1}, {x, y-1}, {x+1, y-1}, 
-             {x-1, y}, {x+1, y}, 
-             {x-1, y+1}, {x, y+1}, {x+1, y+1}]
+  def livingNeighbors(grid, row, col) do
+    coord = [{row-1, col-1}, {row, col-1}, {row+1, col-1}, 
+             {row-1, col}, {row+1, col}, 
+             {row-1, col+1}, {row, col+1}, {row+1, col+1}]
     cells = Enum.map(coord, &cellStatus(grid, &1))
     Enum.count(cells, &isAlive?(&1))
   end
 
-  def cellStatus(grid, {x, y}) do
-    row = Enum.at(grid, x)
-    Enum.at(row, y)
+  def cellStatus(grid, {row, col}) do
+    if isInGrd(grid, {row, col}) do
+      row = Enum.at(grid, row)
+      Enum.at(row, col)
+    else
+      :DEAD
+    end
+  end
+
+  defp isInGrd(grid, {row, col}) do
+    height = length(grid)
+    width = length(Enum.at(grid, 0))
+    row >= 0 && row < height && col >=0 && col < width
   end
 
   def isAlive?(:ALIVE) do true end
   def isAlive?(:DEAD) do false end
+
+  def nextGen(grid) do
+    Enum.with_index(grid) |> Enum.map(&rowGen(&1, grid))
+  end
+
+  defp rowGen({row, rowIndex}, grid) do
+    Enum.with_index(row) |> Enum.map(&nextGenCell(&1, rowIndex, grid))
+  end
+
+  def nextGenCell({cellState, colIndex}, rowIndex, grid) do
+    if isAliveWhenAliveNeighboursEqual(cellState, livingNeighbors(grid, rowIndex, colIndex)) do
+      :ALIVE
+    else
+      :DEAD
+    end
+  end
+
 end

@@ -36,11 +36,29 @@ defmodule GameOfLifeTest do
 
   test "Return the number of living neighbors" do
     assert GameOfLife.livingNeighbors(
-      [[:DEAD, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD]] , 1, 1) == 0
+      [[:DEAD, :DEAD, :DEAD], 
+       [:DEAD, :DEAD, :DEAD], 
+       [:DEAD, :DEAD, :DEAD]] , 1, 1) == 0
     assert GameOfLife.livingNeighbors(
-      [[:DEAD, :DEAD, :DEAD], [:DEAD, :ALIVE, :DEAD], [:DEAD, :DEAD, :DEAD]] , 1, 1) == 0
+      [[:DEAD, :DEAD, :DEAD], 
+       [:DEAD, :ALIVE, :DEAD], 
+       [:DEAD, :DEAD, :DEAD]] , 1, 1) == 0
     assert GameOfLife.livingNeighbors(
-      [[:ALIVE, :DEAD, :DEAD], [:DEAD, :ALIVE, :DEAD], [:DEAD, :DEAD, :DEAD]] , 1, 1) == 1
+      [[:ALIVE, :DEAD, :DEAD], 
+       [:DEAD, :ALIVE, :DEAD], 
+       [:DEAD, :DEAD, :DEAD]] , 1, 1) == 1
+  end
+
+  test "Return the number of living neighbors, edge cases" do
+    assert GameOfLife.livingNeighbors([[:DEAD, :DEAD, :DEAD], 
+                                       [:DEAD, :DEAD, :DEAD], 
+                                       [:DEAD, :DEAD, :ALIVE]] , 0, 0) == 0
+    assert GameOfLife.livingNeighbors([[:DEAD, :DEAD, :DEAD], 
+                                       [:DEAD, :DEAD, :DEAD], 
+                                      [:DEAD, :DEAD, :ALIVE]] , 2, 2) == 0
+    assert GameOfLife.livingNeighbors([[:DEAD, :DEAD, :DEAD], 
+                                       [:DEAD, :DEAD, :DEAD], 
+                                       [:DEAD, :DEAD, :ALIVE]] , 2, 1) == 1
   end
 
   test "test if a cell is alive" do
@@ -53,6 +71,16 @@ defmodule GameOfLifeTest do
       [[:DEAD, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD]] , {1, 1}) == :DEAD
     assert GameOfLife.cellStatus(
       [[:DEAD, :DEAD, :DEAD], [:ALIVE, :DEAD, :DEAD], [:DEAD, :DEAD, :DEAD]] , {1, 0}) == :ALIVE
+  end
+
+  test "Next generation" do
+    assert GameOfLife.nextGen([[:ALIVE]]) == [[:DEAD]]
+    assert GameOfLife.nextGen(
+      [[:DEAD, :DEAD, :DEAD], [:ALIVE, :ALIVE, :ALIVE], [:DEAD, :DEAD, :DEAD]]
+    ) == [[:DEAD, :ALIVE, :DEAD], [:DEAD, :ALIVE, :DEAD], [:DEAD, :ALIVE, :DEAD]]
+    assert GameOfLife.nextGen(
+      [[:DEAD, :ALIVE, :ALIVE], [:DEAD, :ALIVE, :ALIVE], [:DEAD, :DEAD, :DEAD]]
+    ) == [[:DEAD, :ALIVE, :ALIVE], [:DEAD, :ALIVE, :ALIVE], [:DEAD, :DEAD, :DEAD]]
   end
 
 end
